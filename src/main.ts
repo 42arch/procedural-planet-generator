@@ -2,7 +2,6 @@ import {
   AmbientLight,
   AxesHelper,
   DirectionalLight,
-  DoubleSide,
   FrontSide,
   Group,
   IcosahedronGeometry,
@@ -13,11 +12,11 @@ import {
   WebGLRenderer,
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
+import StarField from './elements/star-field'
 import pane from './gui'
 import { params, type Params } from './params'
 import fbmFragement from './shaders/main.frag'
 import fbmVertex from './shaders/main.vert'
-import { getParamsFromUrl, mergeParams, setParamsInUrl } from './url'
 
 class View {
   private width: number
@@ -30,6 +29,7 @@ class View {
   private controls: OrbitControls
   private group: Group
   private params: Params
+  private starField: StarField
 
   constructor(element: string, params: Params) {
     this.canvas = document.querySelector(element) as HTMLElement
@@ -41,8 +41,8 @@ class View {
     this.camera = new PerspectiveCamera(
       75,
       this.width / this.height,
-      0.001,
-      10000,
+      0.0001,
+      100000,
     )
     this.camera.position.set(0, 0, this.params.size * 0.75)
     this.scene.add(this.camera)
@@ -54,13 +54,17 @@ class View {
 
     this.renderer.setSize(this.width, this.height)
     this.renderer.setPixelRatio(this.pixelRatio)
-    this.renderer.setClearColor(0xFFFFFF, 1)
+    this.renderer.setClearColor(0x000000, 1)
 
     this.controls = new OrbitControls(this.camera, this.canvas)
     this.controls.enableDamping = true
+    this.controls.maxDistance = this.params.size * 5
+    this.controls.minDistance = this.params.size * 0.25
 
     this.group = new Group()
-    this.scene.add(this.group)
+    // this.scene.add(this.group)
+
+    this.starField = new StarField(this.scene, { count: 5000, radius: this.params.size * 3 })
 
     this.resize()
     // this.addLight()
@@ -138,14 +142,6 @@ class View {
 
   addGrid() {
     const size = this.params.size
-
-    // const geometry = new PlaneGeometry(
-    //   size,
-    //   size,
-    //   size,
-    //   size,
-    // )
-
     const geometry = new IcosahedronGeometry(size / 4, 200)
 
     const material = this.createFbmMaterial()

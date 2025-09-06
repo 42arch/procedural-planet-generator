@@ -23,6 +23,6 @@ float fbm(vec3 pos, float seed, float scale, int octaves, float lacunarity, floa
     frequency *= lacunarity;
   }
 
-  // result = (result + 1.0) * 0.5;
+  result = (result + 1.0) * 0.5;
   return result;
 }

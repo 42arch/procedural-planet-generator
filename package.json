@@ -1,28 +1,41 @@
 {
-  "name": "procedural-island-generator",
+  "name": "planet-generator",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
-  "description": "Procedural island generator",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "mixpanel-browser": "^2.67.0",
-    "three": "^0.177.0",
-    "tweakpane": "^4.0.5",
-    "tweakpane-plugin-infodump": "^4.0.2"
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "leva": "^0.10.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.182.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.14.1",
-    "@tweakpane/core": "^2.0.5",
-    "@types/three": "^0.177.0",
-    "eslint": "^9.28.0",
-    "typescript": "~5.8.3",
-    "vite": "^6.3.5",
-    "vite-plugin-glsl": "^1.4.2"
+    "@antfu/eslint-config": "^6.7.1",
+    "@eslint-react/eslint-plugin": "^2.3.13",
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.182.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4",
+    "vite-plugin-glsl": "^1.5.5"
   }
 }

@@ -7,6 +7,7 @@ import vertex from '@/shaders/planet/vertex.glsl'
 
 export default function Planet() {
   const {
+    seaLevel,
     seed: elevationSeed,
     scale: elevationScale,
     octaves: elevationOctaves,
@@ -18,6 +19,12 @@ export default function Planet() {
     moisturePersistance,
     moistureLacunarity,
   } = useControls({
+    seaLevel: {
+      value: 0.4,
+      min: 0.00,
+      max: 1.00,
+      step: 0.01,
+    },
     elevation: folder({
       seed: {
         value: 1,
@@ -94,6 +101,7 @@ export default function Planet() {
   const uniforms = useMemo(
     () => ({
       uColor: { value: new Color('#000000') },
+      uSeaLevel: { value: 0.4 },
       uElevationSeed: { value: 1 },
       uElevationScale: { value: 1 },
       uElevationOctaves: { value: 1 },
@@ -119,6 +127,7 @@ export default function Planet() {
     mat.uniforms.uElevationPersistance.value = elevationPersistance
     mat.uniforms.uElevationLacunarity.value = elevationLacunarity
 
+    mat.uniforms.uSeaLevel.value = seaLevel
     mat.uniforms.uMoistureSeed.value = moistureSeed
     mat.uniforms.uMoistureScale.value = moistureScale
     mat.uniforms.uMoistureOctaves.value = moistureOctaves
@@ -135,6 +144,7 @@ export default function Planet() {
     moistureOctaves,
     moisturePersistance,
     moistureLacunarity,
+    seaLevel,
   ])
 
   return (

@@ -1,4 +1,4 @@
-import { GizmoHelper, GizmoViewport, Grid, OrbitControls, Stars } from '@react-three/drei'
+import { GizmoHelper, GizmoViewport, OrbitControls, Stars } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import Planet from './planet'
 

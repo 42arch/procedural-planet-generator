@@ -1,7 +1,9 @@
 import type { ShaderMaterial } from 'three'
 import { folder, useControls } from 'leva'
 import { useEffect, useMemo, useRef } from 'react'
-import { Color, FrontSide } from 'three'
+import { BackSide, Color, FrontSide, Spherical, Vector3 } from 'three'
+import atmosphereFragment from '@/shaders/atomsphere/fragment.glsl'
+import atmosphereVertex from '@/shaders/atomsphere/vertex.glsl'
 import fragment from '@/shaders/planet/fragment.glsl'
 import vertex from '@/shaders/planet/vertex.glsl'
 
@@ -19,6 +21,8 @@ export default function Planet() {
     moistureOctaves,
     moisturePersistance,
     moistureLacunarity,
+    twilightColor: atomsphereTwilightColor,
+    dayColor: atomsphereDayColor,
   } = useControls({
     seaLevel: {
       value: 0.4,
@@ -32,6 +36,23 @@ export default function Planet() {
       max: 1.0,
       step: 0.01,
     },
+    atmosphere: folder({
+      // sunDirection: {
+      //   value: { x: 0, y: 0, z: 1 },
+      // },
+      theta: {
+        value: 0.5,
+      },
+      phi: {
+        value: Math.PI * 0.5,
+      },
+      twilightColor: {
+        value: '#00aaff',
+      },
+      dayColor: {
+        value: '#ff6600',
+      },
+    }),
     elevation: folder({
       seed: {
         value: 1,
@@ -103,9 +124,10 @@ export default function Planet() {
     }),
   })
 
-  const materialRef = useRef<ShaderMaterial | null>(null)
+  const planetMaterialRef = useRef<ShaderMaterial | null>(null)
+  const atmosphereMaterialRef = useRef<ShaderMaterial | null>(null)
 
-  const uniforms = useMemo(
+  const planetUniforms = useMemo(
     () => ({
       uColor: { value: new Color('#000000') },
       uSeaLevel: { value: 0.4 },
@@ -124,8 +146,23 @@ export default function Planet() {
     [],
   )
 
+  const atmosphereUniforms = useMemo(
+    () => {
+      const sunSpherical = new Spherical(1, Math.PI * 0.5, 0.5)
+      const sunDirection = new Vector3()
+      sunDirection.setFromSpherical(sunSpherical)
+
+      return {
+        uSunDirection: { value: new Vector3(0, 0, 1) },
+        uAtomsphereDayColor: { value: new Color('#ff6600') },
+        uAtomsphereTwilightColor: { value: new Color('#00aaff') },
+      }
+    },
+    [],
+  )
+
   useEffect(() => {
-    const mat = materialRef.current
+    const mat = planetMaterialRef.current
     if (!mat)
       return
 
@@ -159,16 +196,32 @@ export default function Planet() {
 
   return (
     <>
+      {/* planet */}
       <mesh>
         <icosahedronGeometry args={[1, 200]} />
         <shaderMaterial
           transparent
           side={FrontSide}
-          ref={materialRef}
-          uniforms={uniforms}
+          ref={planetMaterialRef}
+          uniforms={planetUniforms}
           vertexShader={vertex}
           fragmentShader={fragment}
         />
+      </mesh>
+
+      {/* atmosphere */}
+      <mesh scale={[1.05, 1.05, 1.05]}>
+        <icosahedronGeometry args={[1, 100]} />
+        <shaderMaterial
+          transparent
+          side={BackSide}
+          ref={atmosphereMaterialRef}
+          uniforms={atmosphereUniforms}
+          vertexShader={atmosphereVertex}
+          fragmentShader={atmosphereFragment}
+        />
+
+        {/* <meshStandardMaterial transparent side={FrontSide} opacity={0.5} color={new Color('#ff6600')} /> */}
       </mesh>
     </>
   )
